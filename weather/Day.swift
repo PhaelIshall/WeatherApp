@@ -30,16 +30,16 @@ class Day{
     var date: NSDate?
     
     init(json: JSON, index: Int) {
-        day = json["list"][index]["temp"]["day"].double!
-        min = json["list"][index]["temp"]["min"].double!
-        max = json["list"][index]["temp"]["max"].double!
-        night = json["list"][index]["temp"]["night"].double!
-        eve = json["list"][index]["temp"]["eve"].double!
-        morn = json["list"][index]["temp"]["morn"].double!
-        icon = json["list"][index]["weather"][0]["icon"].string!
+        day = json["list"][index]["temp"]["day"].double ?? 0.0
+        min = json["list"][index]["temp"]["min"].double ?? 0.0
+        max = json["list"][index]["temp"]["max"].double ?? 0.0
+        night = json["list"][index]["temp"]["night"].double ?? 0.0
+        eve = json["list"][index]["temp"]["eve"].double ?? 0.0
+        morn = json["list"][index]["temp"]["morn"].double ?? 0.0
+        icon = json["list"][index]["weather"][0]["icon"].string ?? ""
         iconLink = "http://openweathermap.org/img/w/" + icon! + ".png"
-        description = json["list"][index]["weather"][0]["description"].string!
-        let d = json["list"][0]["dt"].double!
+        description = json["list"][index]["weather"][0]["description"].string ?? ""
+        let d = json["list"][0]["dt"].double ?? 0.0
         self.date = NSDate(timeIntervalSince1970: d)
         date1 = "Today"      
     }

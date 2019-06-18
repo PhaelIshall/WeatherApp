@@ -25,7 +25,7 @@ class WeeklyForecastViewController: UIViewController{
             dataArray = []
             for i in 0..<2{
                 dataArray.append(realCity?.days[i])
-           }
+            }
         default:
             break; 
         }
@@ -53,6 +53,7 @@ class WeeklyForecastViewController: UIViewController{
             self.weatherGetter.getWeather(city: city, days: days){
                 self.realCity = self.weatherGetter.city
                 self.dataArray = (self.realCity?.days) ?? []
+                self.segmentedControl.isUserInteractionEnabled = true
             }
         }
         
@@ -61,6 +62,9 @@ class WeeklyForecastViewController: UIViewController{
 
     override func viewWillAppear(_ animated: Bool) {
         // Add a background view to the table view
+        if (city == nil || city == ""){
+             segmentedControl.isUserInteractionEnabled = false
+        }
         let backgroundImage = UIImage(named: "b.jpg")
         let imageView = UIImageView(image: backgroundImage)
         self.tableView.backgroundView = imageView
@@ -77,21 +81,26 @@ class WeeklyForecastViewController: UIViewController{
 extension WeeklyForecastViewController: UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Day", for: indexPath) as! DayTableViewCell
-        let day = dataArray[indexPath.row]!
-        cell.temperatre.text = "\(day.day!)°C"
-         cell.dateAndDay.text = day.date1
-        if (indexPath.row != 0){
-          let index = day.date1?.index((day.date1?.startIndex)!, offsetBy: 3)
-          cell.dateAndDay.text = day.date1?.substring(to: index!)
+        if (self.city != nil || self.city != ""){
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Day", for: indexPath) as! DayTableViewCell
+            let day = dataArray[indexPath.row] ?? Day(json: "", index: 0)
+            cell.temperatre.text = "\(day.day!)°C"
+             cell.dateAndDay.text = day.date1
+            if (indexPath.row != 0){
+              let index = day.date1?.index((day.date1?.startIndex)!, offsetBy: 3)
+              cell.dateAndDay.text = day.date1?.substring(to: index!)
+            }
+            cell.mint.text = "Min \(day.min!)°C"
+            cell.maxt.text = "Max \(day.max!)°C"
+            cell.mornt.text = "\(day.morn!)°C"
+            cell.evet.text = "\(day.eve!)°C"
+            cell.nightt.text = "\(day.night!)°C"
+            cell.icon.af_setImage(withURL: URL(string:(dataArray[indexPath.row]?.iconLink)! )!)
+            return cell
         }
-        cell.mint.text = "Min \(day.min!)°C"
-        cell.maxt.text = "Max \(day.max!)°C"
-        cell.mornt.text = "\(day.morn!)°C"
-        cell.evet.text = "\(day.eve!)°C"
-        cell.nightt.text = "\(day.night!)°C"
-        cell.icon.af_setImage(withURL: URL(string:(dataArray[indexPath.row]?.iconLink)! )!)
-        return cell
+        else{
+            return tableView.dequeueReusableCell(withIdentifier: "Day", for: indexPath) as! DayTableViewCell
+        }
     }
     
 
